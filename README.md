@@ -7,6 +7,8 @@ A 2D/3D Grapher of mathematical functions (AS OF NOW ONLY COMPLEX FUNCTIONS)
 This Project serves no particular purpose and is licensed under the
 [AGPL-3.0](https://www.gnu.org/licenses/agpl-3.0.en.html).
 
+![Screenshot with a complex function](https://github.com/HubDanDevMan/graphing/blob/master/assets/ammonite.png)
+
 ## Technical details
 
 This program uses C with the `SDL2` Library. Documentation can be found on [the wiki](https:wiki.libsdl.org)
@@ -98,4 +100,9 @@ The following keys are special and will NOT force a redraw of the frame unless e
 -**b**: Save the frame as a bitmap [NOT WORKING :(]
 -**u**: undoes the latest modification [NOT WORKING :(]. Should force a redraw that is identical to the previous frame.
 
+# Gallery
 
+![Screenshot with a complex function](https://github.com/HubDanDevMan/graphing/blob/master/assets/cyan_patterns.png)
+![Screenshot with a complex function](https://github.com/HubDanDevMan/graphing/blob/master/assets/wings.png)
+![Screenshot with a complex function](https://github.com/HubDanDevMan/graphing/blob/master/assets/strawberry_pattern.png)
+![Screenshot with a complex function](https://github.com/HubDanDevMan/graphing/blob/master/assets/spanish_pattern.png)
