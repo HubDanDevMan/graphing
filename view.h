@@ -53,7 +53,7 @@ void resetView(void);
 RedoFlag fromViewDiff();
 extern struct viewstate view;
 extern int *pixels;
-complex double *numbers;
+extern complex double *numbers;
 extern RedoFlag redoFlag;
 extern bool showAxis;
 extern bool undoAction;
