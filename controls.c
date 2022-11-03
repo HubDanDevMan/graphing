@@ -39,7 +39,6 @@ void handleKeyEvent(SDL_KeyboardEvent kbe)
 	cmdKey_t key; 
 	key.sym = kbe.keysym.sym;
 	key.mod = toLocalMod(kbe.keysym.mod);
-
 	stack.isChanged = false;
 	switch (kbe.keysym.sym){
 		case 'i':
@@ -75,6 +74,9 @@ void handleKeyEvent(SDL_KeyboardEvent kbe)
 		case SDLK_ESCAPE:
 			stack.top = 0;
 			displayContent();
+			break;
+		case SDLK_LSHIFT:
+			return;
 		default:
 			break;
 	}
@@ -192,6 +194,8 @@ static void executeDefaultCommand(char sym, unsigned long long times)
 			break;
 		case 'o':	// Zoom out
 			view.scaling += times * view.scaling * 0.1;
+			view.centerx += 2.0*view.centerx * view.scaling;
+			view.centery += 2.0*view.centery * view.scaling;
 			printf("Set scaling to %lf\n", view.scaling);
 			break;
 		case 'w':	// Increase spread
@@ -304,7 +308,36 @@ static void executeDefaultCommand(char sym, unsigned long long times)
 /* Shift modifiers */
 static void executeShiftCommand(char sym, unsigned long long times)
 {
-	printf("Not implemented command handler %s\n", __func__); 
+	redoFlag = RECALC;
+	switch (sym) {
+		case 'f':
+			funcIndex = (funcIndex + times) % funcCount;
+			printf("Increasing by %d\n", times);
+			if (funcArray[funcIndex].defaultView.iterations != 0) {
+				view = funcArray[funcIndex].defaultView;
+			}
+			break;
+		case 'a':
+			animation ^= animation;
+			redoFlag = REDRAW;
+			break;
+		case 'h':
+			view.centerx -= times * WIN_WIDTH * 100.0 * FACTOR * view.scaling;
+			break;
+		case 'l':
+			view.centerx += times * WIN_WIDTH * 100.0 * FACTOR * view.scaling;
+			break;
+		case 'j':
+			view.centery -= times * WIN_HEIGHT * 100.0 * FACTOR * view.scaling;
+			break;
+		case 'k':
+			view.centery += times * WIN_HEIGHT * 100.0 * FACTOR * view.scaling;
+			break;
+		default:
+			printf("Not implemented\n"); 
+			redoFlag = NOTHING;
+			break;
+	}
 }
 
 /* Control modifier */

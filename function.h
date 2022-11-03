@@ -2,6 +2,20 @@
 #define _FUNCTION_H
 #include <math.h>
 #include <complex.h>
+#include "view.h"
+
+// Find compile time Array length method (sizeof() ??)
+typedef struct {
+	complex double (*func)(complex double);	// function to pointer to the actual function
+	// partial rerender functions
+	const char * name;			// read-only at runtime
+	// perhaps default values
+	const struct viewstate defaultView;	// read-only at runtime
+} func_t;
+
+
+extern func_t funcArray[];
+extern const int funcCount;
 
 complex double nome(complex double t);
 

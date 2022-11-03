@@ -35,12 +35,12 @@ void resetView()
 
 void printView()
 {
-	printf("Scaling: %lf\nPosition: %lf %lf\nSpread: %lf\n"
-			"Iterations: %d\nShift: %lf\n"
+	printf("Position: %lf %lf\nScaling: %lf\n"
+			"Iterations: %d\nSpread: %lf\nShift: %lf\n"
 			"Color1: %d\nColor2: %d\n"
 			"Var1: %d\nVar2: %d\nVar3: %d\n",
-			view.scaling, view.centerx, view.centery,
-			view.spread, view.iterations, view.shift,
+			view.centerx, view.centery, view.scaling,
+			view.iterations, view.spread, view.shift,
 			view.color1, view.color2,
 			view.var1, view.var2, view.var3);
 
@@ -68,9 +68,10 @@ RedoFlag fromViewDiff()
 	return RECALC;
 }
 
-
+int funcIndex = 3;
 int *pixels;
 RedoFlag redoFlag = RECALC;
 complex double *numbers;
+bool animation = false;
 bool showAxis = true;
 bool undoAction = false;

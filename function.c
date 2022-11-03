@@ -3,6 +3,25 @@
 #include "function.h"
 #include "view.h"
 
+#define DEFAULT_VIEW = {}
+func_t funcArray[] = {
+	{&nome,		"Square of the nome",		{}},
+	{&zeta,		"Riemann zeta function",	{}},
+	{&E4,		"Eisenstein Series 4",		{}},
+	{&E6,		"Eisenstein Series 6",		{}},
+	{&J,		"J-Invariant",			{}},
+	{&mandelbrot,	"Mandelbrot Set", 		{}},
+	{&collatz,	"CollatzFractal",		{0.0,0.0,0.000015,4,7,18,2,-1.4,0.3,5,9}},
+	{&crex,		"Complex exp reciprocal",	{308.0,125.0,0.00039,4,7,21,5,-1.1,0.3,3,6}},
+	{&julia,	"Julia Set of Mandelbrot Set",	{0.0,0.0,0.0028,30,-125,0,0,-7.5,0.0,5,7}},
+	{&eta,		"Dedekind Eta Function",	{0.0,321.303881,0.002562,12,0,0,0,-4.0,0.0,1,9}},
+	{&moddisc,	"Modular Discriminant",		{0.0,321.303881,0.002562,12,0,0,0,17.7,0.0,5,2}},
+	{&theta,	"Jacobi Theta Function",	{}},
+	{&tet,		"ComplexTetration",		{220.157742,0.0,0.003874,12,0,0,0,-7.8,0.0,11,2}}
+};
+
+const int funcCount = sizeof(funcArray) / sizeof(funcArray[0]);
+
 complex double nome(complex double t)
 {
 	return cexp(t * 2.0 * M_PI * I);

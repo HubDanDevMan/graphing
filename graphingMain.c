@@ -13,7 +13,7 @@
 
 
 /* Function pointers */
-complex double (*cfunc)(complex double) = &mandelbrot;	// The Complex Function to be drawn, from 'function.c'
+complex double (*cfunc)(complex double) = &julia;	// The Complex Function to be drawn, from 'function.c'
 double (*compvar)(complex double) = &creal; 		// cimag | creal
 int (*colorfunc)(complex double) = &coloring2;		// coloring function
 
@@ -77,7 +77,7 @@ void graphingMain(SDL_Window *window, SDL_Renderer *renderer, SDL_Texture *textu
 {
 	bool quit = false;
 	SDL_Event event;
-
+	int shiftIndex = 0;
 
 	/* Program loop */
 	while (!quit)
@@ -100,6 +100,7 @@ void graphingMain(SDL_Window *window, SDL_Renderer *renderer, SDL_Texture *textu
 					break;
 			}
 		}
+		cfunc = funcArray[funcIndex].func;
 		/* rerenders the function if required */
 		if (recalcRequired()){
 			calcFunction(); // redraws itself aswell
@@ -107,7 +108,10 @@ void graphingMain(SDL_Window *window, SDL_Renderer *renderer, SDL_Texture *textu
 			goto doneRecalc;
 		}	
 		// in/decrease iteration, partial update
-		else if (redrawRequired()){
+		if (redrawRequired() | animation){
+			if (animation) {
+				view.shift = 5.0 * sin(0.5*(double)shiftIndex++);
+			}
 			drawAxis();
 			drawFunction();
 			printf(".");
