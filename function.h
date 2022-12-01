@@ -21,13 +21,51 @@ complex double nome(complex double t);
 
 complex double zeta(complex double s);
 
-/* Eisensteinseries 4 */
+/* Eisensteinseries 2 */
+complex double E2(complex double q); // q = square of the nome
+
+/* Eisensteinseries 4*/
 complex double E4(complex double q); // q = square of the nome
 
-/* Eisensteinseries 5 */
+/* Eisensteinseries 6 */
 complex double E6(complex double q); // q = square of the nome
 
+/* Eisensteinseries 8 */
+complex double E8(complex double q); // q = square of the nome
+
 complex double J(complex double t);
+
+complex double K(complex double t);
+
+complex double L(complex double t);
+
+complex double M(complex double t);
+
+complex double N(complex double t);
+
+complex double O(complex double t);
+
+complex double P(complex double t);
+
+complex double Q(complex double t);
+
+complex double R(complex double t);
+
+complex double S(complex double t);
+
+complex double T(complex double t);
+
+complex double U(complex double t);
+
+complex double V(complex double t);
+
+complex double W(complex double t);
+
+complex double X(complex double t);
+
+complex double Y(complex double t);
+
+complex double Z(complex double t);
 
 complex double mandelbrot(complex double c);
 

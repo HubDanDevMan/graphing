@@ -10,7 +10,7 @@ int main(int argc, char ** argv)
 	SDL_Window * window;
 	SDL_Renderer * renderer;
 	SDL_Texture * texture;
-	
+
 	/* Initialize all SDL related stuff */
 	if(SDL_Init(SDL_INIT_EVERYTHING) < 0){
 		fprintf(stderr, "Unable to initialize SDL: %s\n", SDL_GetError());

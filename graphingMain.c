@@ -103,6 +103,7 @@ void graphingMain(SDL_Window *window, SDL_Renderer *renderer, SDL_Texture *textu
 		cfunc = funcArray[funcIndex].func;
 		/* rerenders the function if required */
 		if (recalcRequired()){
+			SDL_SetWindowTitle(window, funcArray[funcIndex].name);
 			calcFunction(); // redraws itself aswell
 			printf("-");
 			goto doneRecalc;

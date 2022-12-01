@@ -68,7 +68,7 @@ RedoFlag fromViewDiff()
 	return RECALC;
 }
 
-int funcIndex = 3;
+int funcIndex = 7;
 int *pixels;
 RedoFlag redoFlag = RECALC;
 complex double *numbers;

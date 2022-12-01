@@ -7,9 +7,27 @@
 func_t funcArray[] = {
 	{&nome,		"Square of the nome",		{}},
 	{&zeta,		"Riemann zeta function",	{}},
+	{&E2,		"Eisenstein Series 2",		{}},
 	{&E4,		"Eisenstein Series 4",		{}},
 	{&E6,		"Eisenstein Series 6",		{}},
+	{&E8,		"Eisenstein Series 8",		{}},
 	{&J,		"J-Invariant",			{}},
+	{&K,		"K-Invariant",			{}},
+	{&L,		"L-Invariant",			{}},
+	{&M,		"M-Invariant",			{}},
+	{&N,		"N-Invariant",			{}},
+	{&O,		"O-Invariant",			{}},
+	{&P,		"P-Invariant",			{}},
+	{&Q,		"Q-Invariant",			{}},
+	{&R,		"R-Invariant",			{}},
+	{&S,		"S-Invariant",			{}},
+	{&T,		"T-Invariant",			{}},
+	{&U,		"U-Invariant",			{}},
+	{&V,		"V-Invariant",			{}},
+	{&W,		"W-Invariant",			{}},
+	{&X,		"X-Invariant",			{}},
+	{&Y,		"Y-Invariant",			{}},
+	{&Z,		"Z-Invariant",			{}},
 	{&mandelbrot,	"Mandelbrot Set", 		{}},
 	{&collatz,	"CollatzFractal",		{0.0,0.0,0.000015,4,7,18,2,-1.4,0.3,5,9}},
 	{&crex,		"Complex exp reciprocal",	{308.0,125.0,0.00039,4,7,21,5,-1.1,0.3,3,6}},
@@ -37,6 +55,18 @@ complex double zeta(complex double s)
 	return sum;
 }
 
+/* Eisensteinseries 2 */
+complex double E2(complex double q) // q = square of the nome
+{
+	complex double sum = CMPLX(0.0, 0.0);
+	complex double qn;
+	for (int n = 1; n < view.iterations; n++){
+		qn = cpow(q,n);
+		sum += (n * qn) / (1.0-qn);
+	}
+	return 1.0 - sum*24.0;
+}
+
 /* Eisensteinseries 4 */
 complex double E4(complex double q) // q = square of the nome
 {
@@ -49,7 +79,7 @@ complex double E4(complex double q) // q = square of the nome
 	return 1.0 + sum*240.0;
 }
 
-/* Eisensteinseries 5 */
+/* Eisensteinseries 6 */
 complex double E6(complex double q) // q = square of the nome
 {
 	complex double sum = CMPLX(0.0, 0.0);
@@ -61,6 +91,18 @@ complex double E6(complex double q) // q = square of the nome
 	return 1.0 - sum*504.0;
 }
 
+/* Eisensteinseries 8 */
+complex double E8(complex double q) // q = square of the nome
+{
+	complex double sum = CMPLX(0.0, 0.0);
+	complex double qn;
+	for (int n = 1; n < view.iterations; n++){
+		qn = cpow(q,n);
+		sum += (n*n*n*n*n*n*n * qn) / (1.0-qn);
+	}
+	return 1.0 + sum*480.0;
+}
+
 complex double J(complex double t)
 {
 	complex double q = cexp(M_PI*I*2.0*t);
@@ -69,6 +111,115 @@ complex double J(complex double t)
 	e4 *= (e4 * e4);
 	return 1728.0 * (e4 / (e4-e6*e6));
 }
+
+complex double K(complex double z)
+{	complex double q = cexp(I*M_PI*2.0L*z);
+	complex double e2 = E2(q);
+	return 1728.0L*(e2/e2-e2*e2);
+}
+
+complex double L(complex double z)
+{	complex double q = cexp(I*M_PI*2.0L*z);
+	complex double e2 = E2(q);
+	complex double e4 = E4(q);
+	return 1728.0L*(e2/e2-e4*e4);
+}
+
+complex double M(complex double z)
+{	complex double q = cexp(I*M_PI*2.0L*z);
+	complex double e2 = E2(q);
+	complex double e6 = E6(q);
+	return 1728.0L*(e2/e2-e6*e6);
+}
+
+complex double N(complex double z)
+{	complex double q = cexp(I*M_PI*2.0L*z);
+	complex double e2 = E2(q);
+	complex double e8 = E8(q);
+	return 1728.0L*(e2/e2-e8*e8);
+}
+
+complex double O(complex double z)
+{	complex double q = cexp(I*M_PI*2.0L*z);
+	complex double e4 = E4(q);
+	complex double e2 = E2(q);
+	return 1728.0L*(e4/e4-e2*e2);
+}
+
+complex double P(complex double z)
+{	complex double q = cexp(I*M_PI*2.0L*z);
+	complex double e4 = E4(q);
+	return 1728.0L*(e4/e4-e4*e4);
+}
+
+complex double Q(complex double z)
+{	complex double q = cexp(I*M_PI*2.0L*z);
+	complex double e4 = E4(q);
+	complex double e6 = E6(q);
+	return 1728.0L*(e4/e4-e6*e6);
+}
+
+complex double R(complex double z)
+{	complex double q = cexp(I*M_PI*2.0L*z);
+	complex double e4 = E4(q);
+	complex double e8 = E8(q);
+	return 1728.0L*(e4/e4-e8*e8);
+}
+
+complex double S(complex double z)
+{	complex double q = cexp(I*M_PI*2.0L*z);
+	complex double e6 = E6(q);
+	complex double e2 = E2(q);
+	return 1728.0L*(e6/e6-e2*e2);
+}
+
+complex double T(complex double z)
+{	complex double q = cexp(I*M_PI*2.0L*z);
+	complex double e6 = E6(q);
+	complex double e4 = E4(q);
+	return 1728.0L*(e6/e6-e4*e4);
+}
+
+complex double U(complex double z)
+{	complex double q = cexp(I*M_PI*2.0L*z);
+	complex double e6 = E6(q);
+	return 1728.0L*(e6/e6-e6*e6);
+}
+
+complex double V(complex double z)
+{	complex double q = cexp(I*M_PI*2.0L*z);
+	complex double e6 = E6(q);
+	complex double e8 = E8(q);
+	return 1728.0L*(e6/e6-e8*e8);
+}
+
+complex double W(complex double z)
+{	complex double q = cexp(I*M_PI*2.0L*z);
+	complex double e8 = E8(q);
+	complex double e2 = E2(q);
+	return 1728.0L*(e8/e8-e2*e2);
+}
+
+complex double X(complex double z)
+{	complex double q = cexp(I*M_PI*2.0L*z);
+	complex double e8 = E8(q);
+	complex double e4 = E4(q);
+	return 1728.0L*(e8/e8-e4*e4);
+}
+
+complex double Y(complex double z)
+{	complex double q = cexp(I*M_PI*2.0L*z);
+	complex double e8 = E8(q);
+	complex double e6 = E6(q);
+	return 1728.0L*(e8/e8-e6*e6);
+}
+
+complex double Z(complex double z)
+{	complex double q = cexp(I*M_PI*2.0L*z);
+	complex double e8 = E8(q);
+	return 1728.0L*(e8/e8-e8*e8);
+}
+
 
 complex double mandelbrot( complex double c)
 {

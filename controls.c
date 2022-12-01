@@ -10,6 +10,8 @@
 #include "bmp.h"
 #include "view.h"
 
+extern SDL_Window * window;
+
 viewhistory_t history;
 cmdstack_t stack;
 
@@ -76,6 +78,9 @@ void handleKeyEvent(SDL_KeyboardEvent kbe)
 			displayContent();
 			break;
 		case SDLK_LSHIFT:
+		case SDLK_RSHIFT:
+		case SDLK_LCTRL:
+		case SDLK_RCTRL:
 			return;
 		default:
 			break;
@@ -277,9 +282,6 @@ static void executeDefaultCommand(char sym, unsigned long long times)
 		case 'd':	/* Increment variable */
 			view.var3 -= times;
 			break;
-
-
-
 		case 'u':	// Optimise for multiple undos
 			for (int i = 0; i < times; i++){
 				undoCommand(); 			// sets current view to previous view
@@ -312,12 +314,19 @@ static void executeShiftCommand(char sym, unsigned long long times)
 	switch (sym) {
 		case 'f':
 			funcIndex = (funcIndex + times) % funcCount;
-			printf("Increasing by %d\n", times);
 			if (funcArray[funcIndex].defaultView.iterations != 0) {
 				view = funcArray[funcIndex].defaultView;
 			}
 			break;
-		case 'a':
+		case 'q':	// shift slice coloring +
+			view.shift += 10.0*times;
+			redoFlag = REDRAW;
+			break;
+		case 'a':	// shift slice coloring -
+			view.shift -= 10.0*times;
+			redoFlag = REDRAW;
+			break;
+		case 'm':
 			animation ^= animation;
 			redoFlag = REDRAW;
 			break;
@@ -333,6 +342,32 @@ static void executeShiftCommand(char sym, unsigned long long times)
 		case 'k':
 			view.centery += times * WIN_HEIGHT * 100.0 * FACTOR * view.scaling;
 			break;
+		case 'w':	// Increase spread
+			view.spread += times*1.0;
+			redoFlag = REDRAW;
+			break;
+		case 's':	// decrease spread
+			view.spread -= times*1.0;
+			redoFlag = REDRAW;
+			break;
+		case 'x':	/* Decrement variable */
+			view.var1 += 10 * times;
+			break;
+		case 'g':	/* Increment variable */
+			view.var1 -= 10 * times;
+			break;
+		case 'n':	/* Decrement variable */
+			view.var2 += 10 * times;
+			break;
+		case 'y':	/* Increment variable */
+			view.var2 -= 10 * times;
+			break;
+		case 'i':	/* Decrement variable */
+			view.var3 += 10 * times;
+			break;
+		case 'd':	/* Increment variable */
+			view.var3 -= 10 * times;
+			break;		
 		default:
 			printf("Not implemented\n"); 
 			redoFlag = NOTHING;
@@ -343,6 +378,33 @@ static void executeShiftCommand(char sym, unsigned long long times)
 /* Control modifier */
 static void executeControlCommand(char sym, unsigned long long times)
 {
+	redoFlag = RECALC;
+	switch (sym) {
+		case 'h':
+			view.centerx -= times * WIN_WIDTH * 0.01 * FACTOR * view.scaling;
+			break;
+		case 'l':
+			view.centerx += times * WIN_WIDTH * 0.01 * FACTOR * view.scaling;
+			break;
+		case 'j':
+			view.centery -= times * WIN_HEIGHT * 0.01 * FACTOR * view.scaling;
+			break;
+		case 'k':
+			view.centery += times * WIN_HEIGHT * 0.01 * FACTOR * view.scaling;
+			break;
+		case 'q':	// shift slice coloring +
+			view.shift += 0.01*times;
+			redoFlag = REDRAW;
+			break;
+		case 'a':	// shift slice coloring -
+			view.shift -= 0.01*times;
+			redoFlag = REDRAW;
+		break;
+		default:
+			printf("Not implemented\n"); 
+			redoFlag = NOTHING;
+			break;
+	}
 
 	printf("Not implemented command handler %s\n", __func__); 
 }
