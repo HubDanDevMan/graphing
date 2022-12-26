@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
 #include <stdbool.h>
@@ -9,6 +10,8 @@
 #include "graphingMain.h"
 #include "bmp.h"
 #include "view.h"
+#include "debug.h"
+#include "animations.h"
 
 extern SDL_Window * window;
 
@@ -38,6 +41,7 @@ static inline char toLocalMod(short mod)
 
 void handleKeyEvent(SDL_KeyboardEvent kbe)
 {
+	DEBUG("Handling key event...");
 	cmdKey_t key; 
 	key.sym = kbe.keysym.sym;
 	key.mod = toLocalMod(kbe.keysym.mod);
@@ -69,18 +73,20 @@ void handleKeyEvent(SDL_KeyboardEvent kbe)
 		case 'j':
 		case 'k':
 		case 'l':
+		case '$':
 			push(key);
 		case SDLK_RETURN:
 			executeStack();
 			/* fall through */
 		case SDLK_ESCAPE:
 			stack.top = 0;
-			displayContent();
+			//displayContent();
 			break;
 		case SDLK_LSHIFT:
 		case SDLK_RSHIFT:
 		case SDLK_LCTRL:
 		case SDLK_RCTRL:
+			DEBUG("Done\n");
 			return;
 		default:
 			break;
@@ -90,6 +96,7 @@ void handleKeyEvent(SDL_KeyboardEvent kbe)
 		printf("Invalid Keycode: %d\n", kbe.keysym.sym);
 	}
 	displayContent();
+	DEBUG("Done\n");
 }
 
 
@@ -175,6 +182,7 @@ static unsigned long long getTimes()
 /* No modifiers */
 static void executeDefaultCommand(char sym, unsigned long long times)
 {
+	double old;
 	undoAction = true;
 	redoFlag = RECALC;		// if needed, command handler must set to false
 	switch (sym){ 
@@ -193,14 +201,17 @@ static void executeDefaultCommand(char sym, unsigned long long times)
 			redoFlag = NOTHING;
 			break;
 		case 'z':	// Zoom in
-			view.scaling -= times * view.scaling * 0.1;
-			view.centerx += 2.0*view.centerx * view.scaling;
-			view.centery += 2.0*view.centery * view.scaling;
+			old = view.scaling;
+			view.scaling -= times * view.scaling * 0.05;
+			//view.centerx += ((view.centerx*view.scaling)-old*view.scaling)*WIN_WIDTH/2.0L;
+			//view.centerx += (view.centerx-WIN_WIDTH/2.0L) * view.scaling;
+			/*view.centerx += 2.0*view.centerx * view.scaling;
+			view.centery += 2.0*view.centery * view.scaling;*/
 			break;
 		case 'o':	// Zoom out
-			view.scaling += times * view.scaling * 0.1;
-			view.centerx += 2.0*view.centerx * view.scaling;
-			view.centery += 2.0*view.centery * view.scaling;
+			view.scaling += times * view.scaling * 0.05;
+			/*view.centerx += 2.0*view.centerx * view.scaling;
+			view.centery += 2.0*view.centery * view.scaling;*/
 			printf("Set scaling to %lf\n", view.scaling);
 			break;
 		case 'w':	// Increase spread
@@ -212,24 +223,28 @@ static void executeDefaultCommand(char sym, unsigned long long times)
 			redoFlag = REDRAW;
 			break;
 		case 'c':	// Toggle Coloring mode, mod count(coloring_modes)
-			view.color1 = (view.color1+times)%COLOR_COUNT;
+			colorArray[view.colorIndex].changeColor1(times);
 			redoFlag = REDRAW;
-			printf("CHANGING COLOR 1: %d\n", view.color1);
 			break;
 		case 'p':	// Toggle Coloring mode, mod count(coloring_modes)
-			view.color2 = (view.color2+times)%COLOR_COUNT;
+			colorArray[view.colorIndex].changeColor2(times);
+			redoFlag = REDRAW;
+			printf("CHANGING COLOR 2: %d\n", view.color2);
+			break;
+		case '$':	// Toggle Coloring mode, mod count(coloring_modes)
+			colorArray[view.colorIndex].changeColorRandom(times);
 			redoFlag = REDRAW;
 			printf("CHANGING COLOR 2: %d\n", view.color2);
 			break;
 
 		case 'v':	// toggle reals || imaginaries
 			redoFlag = REDRAW;
+			undoAction = false;
 			if (compvar == &creal){
 				compvar = &cimag;
 				printf("Plotting imaginaries\n");
 				break;
 			}
-			undoAction = false;
 			compvar = &creal;
 			printf("Plotting reals\n");
 			break;
@@ -240,6 +255,7 @@ static void executeDefaultCommand(char sym, unsigned long long times)
 			break;
 		case 'e':	// export params IC
 			printView();
+			colorArray[view.colorIndex].printColorInfo();
 			redoFlag = NOTHING;
 			undoAction = false;
 			break;
@@ -309,14 +325,30 @@ static void executeDefaultCommand(char sym, unsigned long long times)
 
 /* Shift modifiers */
 static void executeShiftCommand(char sym, unsigned long long times)
-{
+{	double old;
+	float endcols[6];
 	redoFlag = RECALC;
 	switch (sym) {
+		case 'z':	// Zoom in
+			old = view.scaling;
+			view.scaling -= times * view.scaling*0.1;
+			//view.centerx += (view.centerx*view.scaling*WIN_WIDTH/2.0L)-old*view.scaling*WIN_WIDTH/2.0L;
+			/*view.centerx += (view.centerx-WIN_WIDTH) * view.scaling;
+			/ *view.centerx += 2.0*view.centerx * view.scaling;
+			view.centery += 2.0*view.centery * view.scaling;*/
+			break;
+		case 'o':	// Zoom out
+			view.scaling += times * view.scaling*0.1;
+			/*view.centerx += 2.0*view.centerx * view.scaling;
+			view.centery += 2.0*view.centery * view.scaling;*/
+			printf("Set scaling to %lf\n", view.scaling);
+			break;
 		case 'f':
 			funcIndex = (funcIndex + times) % funcCount;
 			if (funcArray[funcIndex].defaultView.iterations != 0) {
 				view = funcArray[funcIndex].defaultView;
 			}
+			printf("Plotting %s\n",funcArray[funcIndex].name);
 			break;
 		case 'q':	// shift slice coloring +
 			view.shift += 10.0*times;
@@ -368,6 +400,26 @@ static void executeShiftCommand(char sym, unsigned long long times)
 		case 'd':	/* Increment variable */
 			view.var3 -= 10 * times;
 			break;		
+		case 'c':	/* change color function*/
+			view.colorIndex = (view.colorIndex + times) % colorCount;
+			redoFlag = REDRAW;
+			break;		
+		case 'p':	/* change fluid color */
+			// USELESS
+			view.color2 = (view.color2 + times) % colorCount;
+			redoFlag = REDRAW;
+			break;		
+		case 'v':
+			// create animation
+			for (int i = 0; i < 6; i++) {
+				endcols[i] = (float) (rand() % 256);
+			}
+			/*createColorAnimation(16,100,endcols);
+			createShiftAnimation(16,100,rand() % 8-8.0);
+			createSpreadAnimation(32,50,rand() % 4 -8.0);*/
+			//createFullAnimation(32, 50, endcols, rand() % 4 -8.0, rand() % 4 - 2.0);
+			createShiftAnimationOsc(64,40, 5, 1.0);
+			break;
 		default:
 			printf("Not implemented\n"); 
 			redoFlag = NOTHING;
@@ -378,8 +430,20 @@ static void executeShiftCommand(char sym, unsigned long long times)
 /* Control modifier */
 static void executeControlCommand(char sym, unsigned long long times)
 {
+	double old = view.scaling;	// used for calculating offset change when zooming
 	redoFlag = RECALC;
 	switch (sym) {
+		case 'z':	// Zoom in
+			view.scaling -= times * view.scaling * 0.01;
+			/*view.centerx += 2.0*view.centerx * view.scaling;
+			view.centery += 2.0*view.centery * view.scaling;*/
+			break;
+		case 'o':	// Zoom out
+			view.scaling += times * view.scaling *0.01;
+			/*view.centerx += 2.0*view.centerx * view.scaling;
+			view.centery += 2.0*view.centery * view.scaling;*/
+			printf("Set scaling to %lf\n", view.scaling);
+			break;
 		case 'h':
 			view.centerx -= times * WIN_WIDTH * 0.01 * FACTOR * view.scaling;
 			break;
@@ -399,7 +463,11 @@ static void executeControlCommand(char sym, unsigned long long times)
 		case 'a':	// shift slice coloring -
 			view.shift -= 0.01*times;
 			redoFlag = REDRAW;
-		break;
+			break;
+		case 'c':	// recolor
+			redoFlag = REDRAW;
+			break;
+
 		default:
 			printf("Not implemented\n"); 
 			redoFlag = NOTHING;
@@ -430,7 +498,7 @@ void executeStack()
 	cmdKey_t commandKey = pop();
 	unsigned long long times = getTimes();
 	if (isInvalid(commandKey)){
-		printf("No command key found\n");
+		printf("No command key found!\n");
 	}
 	executeCommand[commandKey.mod](commandKey.sym, times);
 }

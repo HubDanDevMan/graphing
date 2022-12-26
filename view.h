@@ -6,14 +6,14 @@
 // large spread implies only sparse highlight and only large values
 #define SPREAD_START 3.2
 // small scale means huge zoom
-#define SCALE_START 0.01
+#define SCALE_START 0.10
 //  must be more than two since starts at 1
 #define ITERATIONS 12 /* depends on type of function, some converge faster than others */
 #define WIN_WIDTH (1260)
 #define WIN_HEIGHT (820)
 #define COLOR_MODE_CNT 5 /* col2 phase-linear arg-linear phase-s arg-s NIMP */ 
 #define FACTOR 20.0
-#define DEFAULT_COLOR_1 4
+#define DEFAULT_COLOR_INDEX 2
 #define DEFAULT_COLOR_2 8
 typedef enum {
 	NOTHING	= 0b0000,
@@ -40,17 +40,15 @@ struct viewstate {
 	/* v ALL BELOW will set redoFlag to redraw */
 	double spread; /* <== MUST ALWAYS IMMEDIATELY FOLLOW THE 'RECALC' MEMBERS*/
 	double shift;
-	int color1;
-	int color2;
+	int colorIndex;	// Color Function index
+	int color2;	// @deprecated
 };
-/*
-typedef enum {
-	
-} viewdiff_t;
-*/
+
+
 void printView(void);
 void resetView(void);
 RedoFlag fromViewDiff();
+extern double (*compvar)(complex double);
 extern struct viewstate view;
 extern int *pixels;
 extern int funcIndex;

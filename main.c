@@ -1,6 +1,7 @@
 #include <SDL2/SDL.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
 #include "graphingMain.h"
 #include "view.h"
 
@@ -10,6 +11,9 @@ int main(int argc, char ** argv)
 	SDL_Window * window;
 	SDL_Renderer * renderer;
 	SDL_Texture * texture;
+	
+	/* Initialize RNG */
+	srand(time(NULL));
 
 	/* Initialize all SDL related stuff */
 	if(SDL_Init(SDL_INIT_EVERYTHING) < 0){

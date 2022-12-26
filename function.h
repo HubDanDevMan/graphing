@@ -69,6 +69,8 @@ complex double Z(complex double t);
 
 complex double mandelbrot(complex double c);
 
+complex double grad(complex double c);
+
 complex double collatz(complex double z);
 
 complex double crex(complex double z);
@@ -82,5 +84,8 @@ complex double moddisc(complex double z);
 complex double theta(complex double z);
 
 complex double tet(complex double z);
+
+complex double polylog(complex double z);
+
 #endif /* _FUNCTION_H */
 

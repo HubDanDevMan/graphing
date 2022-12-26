@@ -6,7 +6,7 @@
 #define DEFAULT_VIEW = {}
 func_t funcArray[] = {
 	{&nome,		"Square of the nome",		{}},
-	{&zeta,		"Riemann zeta function",	{}},
+	{&zeta,		"Hurwitz Zeta function",	{0.0,0.0,0.000015,12,1,1,2,0.0,0.3,2,9}},
 	{&E2,		"Eisenstein Series 2",		{}},
 	{&E4,		"Eisenstein Series 4",		{}},
 	{&E6,		"Eisenstein Series 6",		{}},
@@ -29,13 +29,15 @@ func_t funcArray[] = {
 	{&Y,		"Y-Invariant",			{}},
 	{&Z,		"Z-Invariant",			{}},
 	{&mandelbrot,	"Mandelbrot Set", 		{}},
-	{&collatz,	"CollatzFractal",		{0.0,0.0,0.000015,4,7,18,2,-1.4,0.3,5,9}},
-	{&crex,		"Complex exp reciprocal",	{308.0,125.0,0.00039,4,7,21,5,-1.1,0.3,3,6}},
-	{&julia,	"Julia Set of Mandelbrot Set",	{0.0,0.0,0.0028,30,-125,0,0,-7.5,0.0,5,7}},
-	{&eta,		"Dedekind Eta Function",	{0.0,321.303881,0.002562,12,0,0,0,-4.0,0.0,1,9}},
-	{&moddisc,	"Modular Discriminant",		{0.0,321.303881,0.002562,12,0,0,0,17.7,0.0,5,2}},
+	{&grad,		"Gradient function", 		{}},
+	{&collatz,	"CollatzFractal",		{0.0,0.0,0.000015,4,7,18,2,-1.4,0.3,2,9}},
+	{&crex,		"Complex exp reciprocal",	{308.0,125.0,0.00039,4,7,21,5,-1.1,0.3,2,6}},
+	{&julia,	"Julia Set of Mandelbrot Set",	{0.0,0.0,0.0028,30,-125,0,0,-7.5,0.0,2,7}},
+	{&eta,		"Dedekind Eta Function",	{0.0,321.303881,0.002562,12,0,0,0,-4.0,0.0,2,9}},
+	{&moddisc,	"Modular Discriminant",		{0.0,321.303881,0.002562,12,0,0,0,17.7,0.0,2,2}},
 	{&theta,	"Jacobi Theta Function",	{}},
-	{&tet,		"ComplexTetration",		{220.157742,0.0,0.003874,12,0,0,0,-7.8,0.0,11,2}}
+	{&tet,		"ComplexTetration",		{220.157742,0.0,0.003874,12,0,0,0,-7.8,0.0,2,2}},
+	{&polylog,	"Polylogarithm",		{220.157742,0.0,0.003874,12,0,0,0,-7.8,0.0,2,2}}
 };
 
 const int funcCount = sizeof(funcArray) / sizeof(funcArray[0]);
@@ -46,11 +48,15 @@ complex double nome(complex double t)
 
 }
 
+/**
+ * Howitz Zeta Function
+ */
 complex double zeta(complex double s)
 {
 	complex double sum = CMPLX(0.0, 0.0);
+	double a = 1.0L/view.var1;
 	for (int n = 1; n < view.iterations; n++){
-		sum += 1.0/cpow(n,s);
+		sum += 1.0/cpow(n+a,s);
 	}
 	return sum;
 }
@@ -221,7 +227,7 @@ complex double Z(complex double z)
 }
 
 
-complex double mandelbrot( complex double c)
+complex double mandelbrot(complex double c)
 {
 	complex double z = CMPLX(0.0,0.0);
 	for (int n = 0; n < view.iterations; n++){
@@ -230,6 +236,13 @@ complex double mandelbrot( complex double c)
 	return z;
 }
 
+complex double grad(complex double z)
+{
+	for (int n = 0; n < view.iterations; n++){
+		z = z*z;
+	}
+	return z;
+}
 
 complex double collatz(complex double z)
 {
@@ -294,4 +307,15 @@ complex double tet(complex double z)
 		z = cpow(z, z);
 	}
 	return z;
+}
+
+complex double polylog(complex double z)
+{
+	complex double sum = CMPLX(0.0,0.0);
+	complex double s = CMPLX((double)view.var1*0.1, (double)view.var2*0.1);
+	//complex double temp = CMPLX(0.0, 0.0);
+	for (int n = 1; n < view.iterations; n++){
+		sum += cpow(z, n)/cpow(n,s);
+	}
+	return sum;
 }

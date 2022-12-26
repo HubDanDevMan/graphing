@@ -14,7 +14,7 @@ struct viewstate view = {
 	1,
 	SPREAD_START,
 	0.0,		// shift
-	DEFAULT_COLOR_1,
+	DEFAULT_COLOR_INDEX,	// Colorfunc array index
 	DEFAULT_COLOR_2
 };
 
@@ -26,7 +26,7 @@ void resetView()
 	view.scaling = SCALE_START;
 	view.shift = 0.0;
 	view.iterations = ITERATIONS;
-	view.color1 = DEFAULT_COLOR_1;
+	view.colorIndex = DEFAULT_COLOR_INDEX;
 	view.color2 = DEFAULT_COLOR_2;
 	view.var1 = 1;
 	view.var2 = 1;
@@ -37,11 +37,11 @@ void printView()
 {
 	printf("Position: %lf %lf\nScaling: %lf\n"
 			"Iterations: %d\nSpread: %lf\nShift: %lf\n"
-			"Color1: %d\nColor2: %d\n"
+			/*"Color1: %d\nColor2: %d\n"*/
 			"Var1: %d\nVar2: %d\nVar3: %d\n",
 			view.centerx, view.centery, view.scaling,
 			view.iterations, view.spread, view.shift,
-			view.color1, view.color2,
+			/*view.color1, view.color2,*/
 			view.var1, view.var2, view.var3);
 
 
@@ -68,10 +68,11 @@ RedoFlag fromViewDiff()
 	return RECALC;
 }
 
-int funcIndex = 7;
-int *pixels;
+double (*compvar)(complex double) = &creal; 		// cimag | creal
+int funcIndex = 23;
 RedoFlag redoFlag = RECALC;
 complex double *numbers;
+int * pixels;
 bool animation = false;
 bool showAxis = true;
 bool undoAction = false;
