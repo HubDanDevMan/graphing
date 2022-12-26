@@ -1,5 +1,5 @@
 PROG=Graphing
-CC=clang
+CC=gcc
 CFLAGS=-Wall -c -O3 
 DBGFLAGS=-Weverything -g 
 LD=gcc

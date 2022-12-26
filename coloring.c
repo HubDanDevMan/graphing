@@ -127,7 +127,7 @@ void chng2Color3(unsigned long times)
 	fColorIndex = (fColorIndex + times) % FLUID_COLOR_COUNT;
 }
 
-void rndColor3()
+void rndColor3(unsigned long times)
 {
 	for (int i = 0; i < FLUID_COLOR_COUNT; i++) {
 		fluidColors[i] = fmodf((float) rand(), 255.5);
