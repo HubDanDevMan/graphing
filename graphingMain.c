@@ -4,8 +4,6 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <complex.h>
-#include <pthread.h>
-#include <signal.h>
 #include <math.h>
 #include "graphingMain.h"
 #include "controls.h"
@@ -92,8 +90,11 @@ void graphingMain(SDL_Window *window, SDL_Renderer *renderer, SDL_Texture *textu
 	SDL_Event event;
 	int currentFrameLength;
 	int frameDuration;
+	resetView();
 	setupConcurrentGraphing(NUM_THREADS);
 
+	// Initialize colors randomly
+	colorArray[view.colorIndex].changeColorRandom(0);
 	/* Program loop */
 	while (!quit)
 	{

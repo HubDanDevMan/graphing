@@ -3,6 +3,7 @@
 #include <complex.h>
 #include "view.h"
 #include "controls.h"
+#include "function.h"
 
 struct viewstate view = {
 	0.0,		// centerx
@@ -20,6 +21,11 @@ struct viewstate view = {
 
 void resetView()
 {
+	if (funcArray[funcIndex].defaultView.iterations != 0)  {
+		view = funcArray[funcIndex].defaultView;	
+		return;
+	}
+
 	view.centerx = 0.0;
 	view.centery = 0.0;
 	view.spread = SPREAD_START;
@@ -35,24 +41,30 @@ void resetView()
 
 void printView()
 {
-	printf("Position: %lf %lf\nScaling: %lf\n"
-			"Iterations: %d\nSpread: %lf\nShift: %lf\n"
-			/*"Color1: %d\nColor2: %d\n"*/
-			"Var1: %d\nVar2: %d\nVar3: %d\n",
-			view.centerx, view.centery, view.scaling,
-			view.iterations, view.spread, view.shift,
-			/*view.color1, view.color2,*/
-			view.var1, view.var2, view.var3);
-
-
-
+	printf(
+	"\n{\n"
+	"\t\t.centerx = %lf,\n"
+	"\t\t.centery = %lf,\n"
+	"\t\t.scaling = %lf,\n"
+	"\t\t.iterations = %d,\n"
+	"\t\t.var1 = %d,\n"
+	"\t\t.var2 = %d,\n"
+	"\t\t.var3 = %d,\n"
+	"\t\t.spread = %lf,\n"
+	"\t\t.shift = %lf\n"
+	"}\n",
+	view.centerx,
+	view.centery,
+	view.scaling,
+	view.iterations,
+	view.var1,
+	view.var2,
+	view.var3,
+	view.spread,
+	view.shift);
 }
 
-/*enum viewdiff_t getViewDiffType()*/
-
-
-/**
- * determines what changed in the view and triggers the most efficient
+/* determines what changed in the view and triggers the most efficient
  * rerender approach. Apply BEFORE undoing the current change
  */
 RedoFlag fromViewDiff()

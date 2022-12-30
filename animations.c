@@ -55,9 +55,9 @@ bool createSpreadAnimationOsc(int steps, int durationPerStep, int oscCount, floa
 	animationQueue[index].type = ANM_SPREAD | ANM_OSC;
 	animationQueue[index].currentStep = 0;
 	animationQueue[index].maxStep = steps * oscCount;
-	animationQueue[index].dps = durationPerStep;
+	animationQueue[index].dps = durationPerStep / steps;
 	animationQueue[index].freq = (float) oscCount/(float)(steps * durationPerStep);
-	animationQueue[index].amp = amp;
+	animationQueue[index].amp = exp(amp);	// use exp to smoothly approach values close to 0 and because its unsigned
 	// Spread Change per step should be interpreted as the base line of the oscillation, i.e. view's spread value
 	animationQueue[index].spreadChangePerStep = view.spread;
 	DEBUG("Oscillating spread animation has been added to queue");
@@ -66,6 +66,7 @@ bool createSpreadAnimationOsc(int steps, int durationPerStep, int oscCount, floa
 }
 /**
  * steps = frames per wave cycle
+ * durationPerStep = duration per frame
  * oscCount = total wave cycle count
  * amp = signed value of max range, min range
  */
@@ -78,9 +79,9 @@ bool createShiftAnimationOsc(int steps, int durationPerStep, int oscCount, float
 	animationQueue[index].type = ANM_SHIFT | ANM_OSC;
 	animationQueue[index].currentStep = 0;
 	animationQueue[index].maxStep = steps * oscCount;
-	animationQueue[index].dps = durationPerStep;
+	animationQueue[index].dps = durationPerStep / steps;
 	animationQueue[index].freq = (float) oscCount/(float)(steps * durationPerStep);
-	animationQueue[index].amp = amp;
+	animationQueue[index].amp = exp(amp);
 	// Shift Change per step should be interpreted as the base line of the oscillation, i.e. view's shift value
 	animationQueue[index].shiftChangePerStep = view.shift;
 	DEBUG("Oscillating shift animation has been added to queue");

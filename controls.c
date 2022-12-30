@@ -3,6 +3,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <stdbool.h>
+#include <math.h>
 #include <SDL2/SDL.h>
 #include "controls.h"
 #include "function.h"
@@ -14,6 +15,13 @@
 #include "animations.h"
 
 extern SDL_Window * window;
+float oscAmplifier = 0.0f;
+/* duration per frame/cycle(*5) in ms */
+int animationDuration = 50;
+/* number of frames/cycles */
+int animationCount = 5;			// ADD CONTROLS
+
+
 
 viewhistory_t history;
 cmdstack_t stack;
@@ -74,6 +82,7 @@ void handleKeyEvent(SDL_KeyboardEvent kbe)
 		case 'k':
 		case 'l':
 		case '$':
+		case ',':
 			push(key);
 		case SDLK_RETURN:
 			executeStack();
@@ -358,10 +367,15 @@ static void executeShiftCommand(char sym, unsigned long long times)
 			view.shift -= 10.0*times;
 			redoFlag = REDRAW;
 			break;
-		case 'm':
-			animation ^= animation;
-			redoFlag = REDRAW;
+		case 'm': /* unused */
+			oscAmplifier += 0.1 * times;
+			printf("OscAmp as exp(%.2f): %.4f\n", oscAmplifier, exp(oscAmplifier));
 			break;
+		case ',': /* unused */
+			oscAmplifier -= 0.1 * times;
+			printf("OscAmp as exp(%.2f): %.4f\n", oscAmplifier, exp(oscAmplifier));
+			break;
+
 		case 'h':
 			view.centerx -= times * WIN_WIDTH * 100.0 * FACTOR * view.scaling;
 			break;
@@ -409,19 +423,25 @@ static void executeShiftCommand(char sym, unsigned long long times)
 			view.color2 = (view.color2 + times) % colorCount;
 			redoFlag = REDRAW;
 			break;		
-		case 'v':
-			// create animation
+		case 'v': 	/* Full Animation */
+			view.shift = rand() % 4 -8.0;
+			view.spread = rand() % 4 - 2.0;
+		case 'b':	/* pure Color Animation*/
 			for (int i = 0; i < 6; i++) {
 				endcols[i] = (float) (rand() % 256);
 			}
-			/*createColorAnimation(16,100,endcols);
-			createShiftAnimation(16,100,rand() % 8-8.0);
+			createFullAnimation(32, 50, endcols, view.spread, view.shift);
+			//createColorAnimation(16,100,endcols);
+			/*createShiftAnimation(16,100,rand() % 8-8.0);
 			createSpreadAnimation(32,50,rand() % 4 -8.0);*/
-			//createFullAnimation(32, 50, endcols, rand() % 4 -8.0, rand() % 4 - 2.0);
-			createShiftAnimationOsc(64,40, 5, 1.0);
+			break;
+		case '$':	/* Random Color, no bounds REALLY FUNKY */
+			for (int i = 0; i < 6; i++) {
+				fluidColors[i] = (float) (rand() % 20000 - 10000);
+			}
 			break;
 		default:
-			printf("Not implemented\n"); 
+			printf("Not implemented: %d %c\n", sym, sym); 
 			redoFlag = NOTHING;
 			break;
 	}
@@ -464,12 +484,28 @@ static void executeControlCommand(char sym, unsigned long long times)
 			view.shift -= 0.01*times;
 			redoFlag = REDRAW;
 			break;
-		case 'c':	// recolor
+		case 'w':	// shift slice coloring +
+			view.spread += 0.01*times;
 			redoFlag = REDRAW;
 			break;
-
+		case 's':	// shift slice coloring -
+			view.spread -= 0.01*times;
+			redoFlag = REDRAW;
+			break;
+		case 'c':	/* Shift Animation */
+			createShiftAnimation(16,100,rand() % 8-8.0);
+			break;
+		case 'x':	/* Shift Oscillation */ 
+			createShiftAnimationOsc(8, animationDuration*25, 9, oscAmplifier);
+			break;
+		case 'y':	/* Spread Oscillation */
+			createSpreadAnimationOsc(8, animationDuration*10, 9, oscAmplifier);
+			break;
+		case 'v':
+			createSpreadAnimation(32,50,rand() % 4 -8.0);
+			break;
 		default:
-			printf("Not implemented\n"); 
+			printf("Not implemented: %d %c\n", sym, sym); 
 			redoFlag = NOTHING;
 			break;
 	}

@@ -45,7 +45,7 @@ int color1;
 int color2;
 
 /* 2x RGB values = 6 Values ranging from 0 - 255 */
-float fluidColors[FLUID_COLOR_COUNT] = {0.0f, 255.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+float fluidColors[FLUID_COLOR_COUNT] = {0.0f, 255.0f, 0.0f, 255.0f, 0.0f, 0.0f};
 int fColorIndex = 0;
 
 
